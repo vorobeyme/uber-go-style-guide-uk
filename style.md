@@ -48,6 +48,7 @@ row before the </tbody></table> line.
 
 -->
 
+<<<<<<< HEAD
 # Посібник зі стилю Go від Uber
 
 ## Зміст
@@ -113,6 +114,76 @@ row before the </tbody></table> line.
 - [Шаблони](#шаблони)
   - [Тестові таблиці](#тестові-таблиці)
   - [Функціональні параметри](#функціональні-параметри)
+=======
+# Uber Go Style Guide
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Guidelines](#guidelines)
+  - [Pointers to Interfaces](#pointers-to-interfaces)
+  - [Verify Interface Compliance](#verify-interface-compliance)
+  - [Receivers and Interfaces](#receivers-and-interfaces)
+  - [Zero-value Mutexes are Valid](#zero-value-mutexes-are-valid)
+  - [Copy Slices and Maps at Boundaries](#copy-slices-and-maps-at-boundaries)
+  - [Defer to Clean Up](#defer-to-clean-up)
+  - [Channel Size is One or None](#channel-size-is-one-or-none)
+  - [Start Enums at One](#start-enums-at-one)
+  - [Use `"time"` to handle time](#use-time-to-handle-time)
+  - [Errors](#errors)
+    - [Error Types](#error-types)
+    - [Error Wrapping](#error-wrapping)
+    - [Error Naming](#error-naming)
+  - [Handle Type Assertion Failures](#handle-type-assertion-failures)
+  - [Don't Panic](#dont-panic)
+  - [Use go.uber.org/atomic](#use-gouberorgatomic)
+  - [Avoid Mutable Globals](#avoid-mutable-globals)
+  - [Avoid Embedding Types in Public Structs](#avoid-embedding-types-in-public-structs)
+  - [Avoid Using Built-In Names](#avoid-using-built-in-names)
+  - [Avoid `init()`](#avoid-init)
+  - [Exit in Main](#exit-in-main)
+    - [Exit Once](#exit-once)
+  - [Use field tags in marshaled structs](#use-field-tags-in-marshaled-structs)
+  - [Don't fire-and-forget goroutines](#dont-fire-and-forget-goroutines)
+    - [Wait for goroutines to exit](#wait-for-goroutines-to-exit)
+    - [No goroutines in `init()`](#no-goroutines-in-init)
+- [Performance](#performance)
+  - [Prefer strconv over fmt](#prefer-strconv-over-fmt)
+  - [Avoid string-to-byte conversion](#avoid-string-to-byte-conversion)
+  - [Prefer Specifying Container Capacity](#prefer-specifying-container-capacity)
+      - [Specifying Map Capacity Hints](#specifying-map-capacity-hints)
+      - [Specifying Slice Capacity](#specifying-slice-capacity)
+- [Style](#style)
+  - [Avoid overly long lines](#avoid-overly-long-lines)
+  - [Be Consistent](#be-consistent)
+  - [Group Similar Declarations](#group-similar-declarations)
+  - [Import Group Ordering](#import-group-ordering)
+  - [Package Names](#package-names)
+  - [Function Names](#function-names)
+  - [Import Aliasing](#import-aliasing)
+  - [Function Grouping and Ordering](#function-grouping-and-ordering)
+  - [Reduce Nesting](#reduce-nesting)
+  - [Unnecessary Else](#unnecessary-else)
+  - [Top-level Variable Declarations](#top-level-variable-declarations)
+  - [Prefix Unexported Globals with _](#prefix-unexported-globals-with-_)
+  - [Embedding in Structs](#embedding-in-structs)
+  - [Local Variable Declarations](#local-variable-declarations)
+  - [nil is a valid slice](#nil-is-a-valid-slice)
+  - [Reduce Scope of Variables](#reduce-scope-of-variables)
+  - [Avoid Naked Parameters](#avoid-naked-parameters)
+  - [Use Raw String Literals to Avoid Escaping](#use-raw-string-literals-to-avoid-escaping)
+  - [Initializing Structs](#initializing-structs)
+      - [Use Field Names to Initialize Structs](#use-field-names-to-initialize-structs)
+      - [Omit Zero Value Fields in Structs](#omit-zero-value-fields-in-structs)
+      - [Use `var` for Zero Value Structs](#use-var-for-zero-value-structs)
+      - [Initializing Struct References](#initializing-struct-references)
+  - [Initializing Maps](#initializing-maps)
+  - [Format Strings outside Printf](#format-strings-outside-printf)
+  - [Naming Printf-style Functions](#naming-printf-style-functions)
+- [Patterns](#patterns)
+  - [Test Tables](#test-tables)
+  - [Functional Options](#functional-options)
+>>>>>>> e0b30cab6a22cb59465ecacde311f360820652d9
 - [Linting](#linting)
 
 ## Вступ
@@ -1861,6 +1932,202 @@ bytes, err := json.Marshal(Stock{
 Зміни в структурі серіалізованої форми, включаючи імена полів, порушують цей контракт.
 Додання імен полів всередині тегів, дозволяє зробити контракт явним та захищеним від
 випадкового порушення контракту шляхом рефакторингу або перейменування полів.
+
+### Don't fire-and-forget goroutines
+
+Goroutines are lightweight, but they're not free:
+at minimum, they cost memory for their stack and CPU to be scheduled.
+While these costs are small for typical uses of goroutines,
+they can cause significant performance issues
+when spawned in large numbers without controlled lifetimes.
+Goroutines with unmanaged lifetimes can also cause other issues
+like preventing unused objects from being garbage collected
+and holding onto resources that are otherwise no longer used.
+
+Therefore, do not leak goroutines in production code.
+Use [go.uber.org/goleak](https://pkg.go.dev/go.uber.org/goleak)
+to test for goroutine leaks inside packages that may spawn goroutines.
+
+In general, every goroutine:
+
+- must have a predictable time at which it will stop running; or
+- there must be a way to signal to the goroutine that it should stop
+
+In both cases, there must be a way code to block and wait for the goroutine to
+finish.
+
+For example:
+
+<table>
+<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<tbody>
+<tr><td>
+
+```go
+go func() {
+  for {
+    flush()
+    time.Sleep(delay)
+  }
+}()
+```
+
+</td><td>
+
+```go
+var (
+  stop = make(chan struct{}) // tells the goroutine to stop
+  done = make(chan struct{}) // tells us that the goroutine exited
+)
+go func() {
+  defer close(done)
+
+  ticker := time.NewTicker(delay)
+  defer ticker.Stop()
+  for {
+    select {
+    case <-ticker.C:
+      flush()
+    case <-stop:
+      return
+    }
+  }
+}()
+
+// Elsewhere...
+close(stop)  // signal the goroutine to stop
+<-done       // and wait for it to exit
+```
+
+</td></tr>
+<tr><td>
+
+There's no way to stop this goroutine.
+This will run until the application exits.
+
+</td><td>
+
+This goroutine can be stopped with `close(stop)`,
+and we can wait for it to exit with `<-done`.
+
+</td></tr>
+</tbody></table>
+
+#### Wait for goroutines to exit
+
+Given a goroutine spawned by the system,
+there must be a way to wait for the goroutine to exit.
+There are two popular ways to do this:
+
+- Use a `sync.WaitGroup`.
+  Do this if there are multiple goroutines that you want to wait for
+
+    ```go
+    var wg sync.WaitGroup
+    for i := 0; i < N; i++ {
+      wg.Add(1)
+      go func() {
+        defer wg.Done()
+        // ...
+      }()
+    }
+    
+    // To wait for all to finish:
+    wg.Wait()
+    ```
+
+- Add another `chan struct{}` that the goroutine closes when it's done.
+  Do this if there's only one goroutine.
+
+    ```go
+    done := make(chan struct{})
+    go func() {
+      defer close(done)
+      // ...
+    }()
+    
+    // To wait for the goroutine to finish:
+    <-done
+    ```
+
+#### No goroutines in `init()`
+
+`init()` functions should not spawn goroutines.
+See also [Avoid init()](#avoid-init).
+
+If a package has need of a background goroutine,
+it must expose an object that is responsible for managing a goroutine's
+lifetime.
+The object must provide a method (`Close`, `Stop`, `Shutdown`, etc)
+that signals the background goroutine to stop, and waits for it to exit.
+
+<table>
+<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<tbody>
+<tr><td>
+
+```go
+func init() {
+  go doWork()
+}
+
+func doWork() {
+  for {
+    // ...
+  }
+}
+```
+
+</td><td>
+
+```go
+type Worker struct{ /* ... */ }
+
+func NewWorker(...) *Worker {
+  w := &Worker{
+    stop: make(chan struct{}),
+    done: make(chan struct{}),
+    // ...
+  }
+  go w.doWork()
+}
+
+func (w *Worker) doWork() {
+  defer close(w.done)
+  for {
+    // ...
+    case <-w.stop:
+      return
+  }
+}
+
+// Shutdown tells the worker to stop
+// and waits until it has finished.
+func (w *Worker) Shutdown() {
+  close(w.stop)
+  <-w.done
+}
+```
+
+</td></tr>
+<tr><td>
+
+Spawns a background goroutine unconditionally when the user exports this package.
+The user has no control over the goroutine or a means of stopping it.
+
+</td><td>
+
+Spawns the worker only if the user requests it.
+Provides a means of shutting down the worker so that the user can free up
+resources used by the worker.
+
+Note that you should use `WaitGroup`s if the worker manages multiple
+goroutines.
+See [Wait for goroutines to exit](#wait-for-goroutines-to-exit).
+
+
+</td></tr>
+</tbody></table>
 
 ## Продуктивність
 

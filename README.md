@@ -22,3 +22,6 @@
 - **Tłumaczenie polskie** (Polish): [DamianSkrzypczak/uber-go-guide-pl](https://github.com/DamianSkrzypczak/uber-go-guide-pl)
 - **Français** (French): [rm3l/uber-go-style-guide-fr](https://github.com/rm3l/uber-go-style-guide-fr)
 - **Türkçe** (Turkish): [ksckaan1/uber-go-style-guide-tr](https://github.com/ksckaan1/uber-go-style-guide-tr)
+- **Український переклад** (Ukrainian): [vorobeyme/uber-go-style-guide-uk](https://github.com/vorobeyme/uber-go-style-guide-uk)
+
+If you have a translation, feel free to submit a PR adding it to the list.
