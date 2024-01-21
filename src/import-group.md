@@ -1,14 +1,14 @@
-# Import Group Ordering
+# Порядок імпортування бібліотек
 
-There should be two import groups:
+Повинно бути дві групи імпорту:
 
-- Standard library
-- Everything else
+- Стандартна бібліотека
+- Все інше
 
-This is the grouping applied by goimports by default.
+Це групування, застосоване `goimports` за замовчуванням.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 

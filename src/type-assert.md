@@ -1,12 +1,12 @@
-# Handle Type Assertion Failures
+# Обробка помилок підтвердження типу
 
-The single return value form of a [type assertion] will panic on an incorrect
-type. Therefore, always use the "comma ok" idiom.
+Форма [підтвердження типу] з єдиним значенням, що повертається, викличе паніку
+через неправильний тип. Тому завжди використовуйте ідіому "кома добре" ("comma ok").
 
-  [type assertion]: https://golang.org/ref/spec#Type_assertions
+  [підтвердження типу]: https://golang.org/ref/spec#Type_assertions
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -19,7 +19,7 @@ t := i.(string)
 ```go
 t, ok := i.(string)
 if !ok {
-  // handle the error gracefully
+  // коректно обробити помилку
 }
 ```
 

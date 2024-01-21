@@ -1,30 +1,21 @@
-# Don't fire-and-forget goroutines
+# Не використовуйте горутини як "вистрілив та забув"
 
-Goroutines are lightweight, but they're not free:
-at minimum, they cost memory for their stack and CPU to be scheduled.
-While these costs are small for typical uses of goroutines,
-they can cause significant performance issues
-when spawned in large numbers without controlled lifetimes.
-Goroutines with unmanaged lifetimes can also cause other issues
-like preventing unused objects from being garbage collected
-and holding onto resources that are otherwise no longer used.
+Горутини легкі, але вони не безплатні: як мінімум, вони потребують пам'яті для стеку та процесора, який потрібно планувати. Хоча ці витрати невеликі для типового використання горутин, вони можуть спричинити значні проблеми з продуктивністю, якщо їх створювати у великій кількості та не контролювати час їх життя. Горутини з некерованим терміном життя також можуть викликати інші проблеми, такі як заважання збірці сміття для об'єктів, які не використовуються та утримання ресурсів, які більше не використовуються.
 
-Therefore, do not leak goroutines in production code.
-Use [go.uber.org/goleak](https://pkg.go.dev/go.uber.org/goleak)
-to test for goroutine leaks inside packages that may spawn goroutines.
+Отже, не допускайте витоку горутин в продакшн коді. Використовуйте [go.uber.org/goleak](https://pkg.go.dev/go.uber.org/goleak), щоб перевірити витоки горутин в середині пакетів, які можуть створювати горутини.
 
-In general, every goroutine:
 
-- must have a predictable time at which it will stop running; or
-- there must be a way to signal to the goroutine that it should stop
+Загалом, кожна горутина:
 
-In both cases, there must be a way code to block and wait for the goroutine to
-finish.
+- повинна мати передбачуваний час, в який вона припиняє виконання; або
+- повинен існувати спосіб сигналізувати про те, що вона повинна зупинитися
 
-For example:
+В обох випадках повинен існувати код, який блокує і чекає на завершення роботи горутини.
+
+Наприклад:
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -41,8 +32,8 @@ go func() {
 
 ```go
 var (
-  stop = make(chan struct{}) // tells the goroutine to stop
-  done = make(chan struct{}) // tells us that the goroutine exited
+  stop = make(chan struct{}) // повідомляє горутину, що вона повинна зупинитися
+  done = make(chan struct{}) // повідомляє нас, що горутину завершено
 )
 go func() {
   defer close(done)
@@ -59,21 +50,21 @@ go func() {
   }
 }()
 
-// Elsewhere...
-close(stop)  // signal the goroutine to stop
-<-done       // and wait for it to exit
+// В іншому місці...
+close(stop)  // сигналізувати горутині про зупинку
+<-done       // і почекати, поки вона завершиться
 ```
 
 </td></tr>
 <tr><td>
 
-There's no way to stop this goroutine.
-This will run until the application exits.
+Зупинити цю горутину неможливо.
+Вона виконуватиметься до завершення роботи програми.
 
 </td><td>
 
-This goroutine can be stopped with `close(stop)`,
-and we can wait for it to exit with `<-done`.
+Цю горутину можна зупинити за допомогою `close(stop)`,
+а можна дочекатися її завершення за допомогою `<-done`.
 
 </td></tr>
 </tbody></table>

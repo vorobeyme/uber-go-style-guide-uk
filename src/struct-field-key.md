@@ -1,12 +1,12 @@
-# Use Field Names to Initialize Structs
+# Використовуйте імена полів для ініціалізації структур
 
-You should almost always specify field names when initializing structs. This is
-now enforced by [`go vet`].
+Ви майже завжди повинні вказувати імена полів під час ініціалізації структур.
+Це обов'язково при використанні [`go vet`].
 
   [`go vet`]: https://golang.org/cmd/vet/
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -27,8 +27,7 @@ k := User{
 </td></tr>
 </tbody></table>
 
-Exception: Field names *may* be omitted in test tables when there are 3 or
-fewer fields.
+Виняток: назви полів *можна* опускати в тестових таблицях, якщо є 3 або менше полів.
 
 ```go
 tests := []struct{

@@ -1,10 +1,9 @@
-# Local Variable Declarations
+# Оголошення локальних змінних
 
-Short variable declarations (`:=`) should be used if a variable is being set to
-some value explicitly.
+Короткі оголошення змінних (`:=`) повинні використовуватися, якщо змінна має явне значення.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -21,13 +20,13 @@ s := "foo"
 </td></tr>
 </tbody></table>
 
-However, there are cases where the default value is clearer when the `var`
-keyword is used. [Declaring Empty Slices], for example.
+Однак існують випадки, коли значення за замовчуванням виглядає зрозумілішим,
+якщо використовується ключове слово `var`. Наприклад, [оголошення порожніх зрізів].
 
-  [Declaring Empty Slices]: https://github.com/golang/go/wiki/CodeReviewComments#declaring-empty-slices
+  [Оголошення порожніх зрізів]: https://github.com/golang/go/wiki/CodeReviewComments#declaring-empty-slices
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 

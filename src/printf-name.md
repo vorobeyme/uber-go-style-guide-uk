@@ -1,22 +1,22 @@
-# Naming Printf-style Functions
+# Назви функцій у стилі Printf
 
-When you declare a `Printf`-style function, make sure that `go vet` can detect
-it and check the format string.
+Коли ви оголошуєте функцію у стилі `Printf`, переконайтеся,
+що `go vet` може її виявити та перевірити форматування рядка.
 
-This means that you should use predefined `Printf`-style function
-names if possible. `go vet` will check these by default. See [Printf family]
-for more information.
+Це означає, що ви повинні використовувати попередньо визначені назви функцій
+у стилі `Printf`, якщо це можливо. `go vet` перевірить їх за замовчуванням.
+Для отримання додаткової інформації дивіться [Printf family].
 
   [Printf family]: https://golang.org/cmd/vet/#hdr-Printf_family
 
-If using the predefined names is not an option, end the name you choose with
-f: `Wrapf`, not `Wrap`. `go vet` can be asked to check specific `Printf`-style
-names but they must end with f.
+Якщо використання попередньо визначених імен неможливе, завершіть вибране ім'я символом f:
+`Wrapf`, а не `Wrap`. `go vet` можна попросити перевірити конкретні назви у стилі `Printf`,
+але вони мають закінчуватися на f.
+
 
 ```shell
 go vet -printfuncs=wrapf,statusf
 ```
-
-See also [go vet: Printf family check].
+Також дивіться [go vet: Printf family check].
 
   [go vet: Printf family check]: https://kuzminva.wordpress.com/2017/11/07/go-vet-printf-family-check/

@@ -1,12 +1,13 @@
-# Reduce Scope of Variables
+# Зменште область видимості змінних
 
-Where possible, reduce scope of variables. Do not reduce the scope if it
-conflicts with [Reduce Nesting](nest-less.md).
+Де це можливо, зменшуйте область видимості змінних.
+Дане правило не повинно суперечити наступному правилу [зменште вкладеність](nest-less.md).
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
+
 
 ```go
 err := os.WriteFile(name, data, 0644)
@@ -26,11 +27,10 @@ if err := os.WriteFile(name, data, 0644); err != nil {
 </td></tr>
 </tbody></table>
 
-If you need a result of a function call outside of the if, then you should not
-try to reduce the scope.
+Якщо вам потрібен результат функції поза межами if, тоді вам не слід намагатися зменшувати область видимості.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 

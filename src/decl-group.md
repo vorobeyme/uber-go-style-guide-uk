@@ -1,9 +1,9 @@
-# Group Similar Declarations
+# Групуйте схожі декларації
 
-Go supports grouping similar declarations.
+Go підтримує групування схожих декларацій.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -24,10 +24,10 @@ import (
 </td></tr>
 </tbody></table>
 
-This also applies to constants, variables, and type declarations.
+Це також стосується констант, змінних і оголошень типів.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -69,10 +69,10 @@ type (
 </td></tr>
 </tbody></table>
 
-Only group related declarations. Do not group declarations that are unrelated.
+Групуйте лише пов'язані декларації та не групуйте ті, що не мають нічого спільного.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -104,11 +104,11 @@ const EnvVar = "MY_ENV"
 </td></tr>
 </tbody></table>
 
-Groups are not limited in where they can be used. For example, you can use them
-inside of functions.
+Групи не мають обмежень щодо місця використання.
+Наприклад, ви можете використовувати їх всередині функцій.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -139,12 +139,12 @@ func f() string {
 </td></tr>
 </tbody></table>
 
-Exception: Variable declarations, particularly inside functions, should be
-grouped together if declared adjacent to other variables. Do this for variables
-declared together even if they are unrelated.
+Виняток: оголошення змінних, особливо всередині функцій, повинні бути згруповані разом,
+якщо вони оголошені поруч з іншими змінними.
+Зробіть це для змінних, оголошених разом, навіть якщо вони не мають нічого спільного.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 

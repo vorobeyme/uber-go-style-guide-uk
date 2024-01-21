@@ -1,17 +1,17 @@
-# Initializing Struct References
+# Ініціалізація посилань на структури
 
-Use `&T{}` instead of `new(T)` when initializing struct references so that it
-is consistent with the struct initialization.
+Використовуйте `&T{}` замість `new(T)` під час ініціалізації посилань на структуру,
+щоб це було відповідно до ініціалізації структури.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
 ```go
 sval := T{Name: "foo"}
 
-// inconsistent
+// непослідовність
 sptr := new(T)
 sptr.Name = "bar"
 ```

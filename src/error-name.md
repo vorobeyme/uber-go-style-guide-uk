@@ -1,33 +1,29 @@
-# Error Naming
+# Іменування помилок
 
-For error values stored as global variables,
-use the prefix `Err` or `err` depending on whether they're exported.
-This guidance supersedes the [Prefix Unexported Globals with _](global-name.md).
-
+Для значень помилок, які зберігаються як глобальні змінні,
+використовуйте префікс `Err` або `err` залежно від того, експортовані вони чи ні.
+Ці рекомендації замінюють наступні рекомендації – [використовуйте префікс `_` для не експортованих глобальних змінних](global-name.md).
 ```go
 var (
-  // The following two errors are exported
-  // so that users of this package can match them
-  // with errors.Is.
+  // Наступні дві помилки експортовано, щоб
+  // користувачі даного пакету могли порівняти їх з errors.Is.
 
   ErrBrokenLink = errors.New("link is broken")
   ErrCouldNotOpen = errors.New("could not open")
 
-  // This error is not exported because
-  // we don't want to make it part of our public API.
-  // We may still use it inside the package
-  // with errors.Is.
+  // Ця помилка не експортується, оскільки ми не хочемо
+  // робити її частиною нашого загальнодоступного API.
+  // Ми все ще можемо використовувати її в середині пакету з errors.Is.
 
   errNotFound = errors.New("not found")
 )
 ```
 
-For custom error types, use the suffix `Error` instead.
+Для власних типів помилок використовуйте суфікс `Error`.
 
 ```go
-// Similarly, this error is exported
-// so that users of this package can match it
-// with errors.As.
+// Подібним чином ця помилка експортується, щоб
+// користувачі даного пакету могли зіставити її з errors.As.
 
 type NotFoundError struct {
   File string
@@ -37,10 +33,9 @@ func (e *NotFoundError) Error() string {
   return fmt.Sprintf("file %q not found", e.File)
 }
 
-// And this error is not exported because
-// we don't want to make it part of the public API.
-// We can still use it inside the package
-// with errors.As.
+// Ця помилка не експортується, тому що ми не хочемо
+// робити її частиною публічного API.
+// Ми все ще можемо використовувати її в середині пакету з errors.As.
 
 type resolveError struct {
   Path string

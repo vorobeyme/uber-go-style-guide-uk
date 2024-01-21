@@ -1,16 +1,13 @@
-# No goroutines in `init()`
+# Жодних горутин у `init()`
 
-`init()` functions should not spawn goroutines.
-See also [Avoid init()](init.md).
+Функції `init()` не повинні створювати горутини.
+Також зверніть увагу на [уникайте init()](init.md).
 
-If a package has need of a background goroutine,
-it must expose an object that is responsible for managing a goroutine's
-lifetime.
-The object must provide a method (`Close`, `Stop`, `Shutdown`, etc)
-that signals the background goroutine to stop, and waits for it to exit.
+Якщо пакету потрібна фонова горутина, він повинен створити об'єкт, який відповідає за керування часом її роботи.
+Об'єкт повинен надавати метод (`Close`, `Stop`, `Shutdown` тощо), який сигналізує про зупинку фонової горутини та чекає на її завершення.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -49,8 +46,9 @@ func (w *Worker) doWork() {
   }
 }
 
-// Shutdown tells the worker to stop
-// and waits until it has finished.
+// Shutdown повідомляє worker про зупинку
+// та чекає, поки він не закінчить роботу.
+
 func (w *Worker) Shutdown() {
   close(w.stop)
   <-w.done
@@ -60,18 +58,14 @@ func (w *Worker) Shutdown() {
 </td></tr>
 <tr><td>
 
-Spawns a background goroutine unconditionally when the user exports this package.
-The user has no control over the goroutine or a means of stopping it.
+Безпосередньо запускає фонову горутину, коли користувач експортує цей пакет. Користувач не має жодного контролю над горутиною та не може її зупинити.
 
 </td><td>
 
-Spawns the worker only if the user requests it.
-Provides a means of shutting down the worker so that the user can free up
-resources used by the worker.
+Створює *worker* лише за запитом користувача. Надає можливість закрити *worker*, щоб користувач міг звільнити ресурси, які використовуються.
 
-Note that you should use `WaitGroup`s if the worker manages multiple
-goroutines.
-See [Wait for goroutines to exit](goroutine-exit.md).
+Зауважте, що вам слід використовувати `WaitGroup`, якщо *worker* керує декількома горутинами.
+Див. [очікуйте завершення горутин](goroutine-exit.md).
 
 </td></tr>
 </tbody></table>

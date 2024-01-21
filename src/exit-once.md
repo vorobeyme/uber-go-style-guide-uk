@@ -1,14 +1,14 @@
-# Exit Once
+# Виходьте один раз
 
-If possible, prefer to call `os.Exit` or `log.Fatal` **at most once** in your
-`main()`. If there are multiple error scenarios that halt program execution,
-put that logic under a separate function and return errors from it.
+Якщо можливо, надайте перевагу виклику `os.Exit` або `log.Fatal` **не більше одного разу**
+у вашій функції `main()`. Якщо існує кілька сценаріїв помилок, які зупиняють виконання програми,
+помістіть цю логіку в окрему функцію та вже з неї повертайте помилки.
 
-This has the effect of shortening your `main()` function and putting all key
-business logic into a separate, testable function.
+Це призводить до скорочення вашої функції `main()` та тримає всю ключову бізнес-логіку
+в окремій функції, яку можна протестувати.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -28,8 +28,8 @@ func main() {
   }
   defer f.Close()
 
-  // If we call log.Fatal after this line,
-  // f.Close will not be called.
+  // Якщо ми викличемо log.Fatal після цього рядка,
+  // f.Close не буде викликано.
 
   b, err := io.ReadAll(f)
   if err != nil {
@@ -76,8 +76,7 @@ func run() error {
 </td></tr>
 </tbody></table>
 
-The example above uses `log.Fatal`, but the guidance also applies to
-`os.Exit` or any library code that calls `os.Exit`.
+У наведеному вище прикладі використовується `log.Fatal`, але настанови також стосуються `os.Exit` або будь-якого бібліотечного коду, який викликає `os.Exit`.
 
 ```go
 func main() {
@@ -88,10 +87,8 @@ func main() {
 }
 ```
 
-You may alter the signature of `run()` to fit your needs.
-For example, if your program must exit with specific exit codes for failures,
-`run()` may return the exit code instead of an error.
-This allows unit tests to verify this behavior directly as well.
+Ви можете змінити сигнатуру `run()` відповідно до ваших потреб.
+Наприклад, якщо ваша програма має завершувати роботу з певним кодом завершення у випадку помилок, `run()` може повертати код завершення замість помилки. Це дозволить модульним тестам безпосередньо перевіряти таку поведінку.
 
 ```go
 func main() {
@@ -103,15 +100,11 @@ func run() (exitCode int) {
 }
 ```
 
-More generally, note that the `run()` function used in these examples
-is not intended to be prescriptive.
-There's flexibility in the name, signature, and setup of the `run()` function.
-Among other things, you may:
+Загалом, зауважте, що функція `run()`, яка використовується у цих прикладах, не є директивною. Існує гнучкість у назві, сигнатурі та налаштуванні функції `run()`. Серед іншого, ви можете:
 
-- accept unparsed command line arguments (e.g., `run(os.Args[1:])`)
-- parse command line arguments in `main()` and pass them onto `run`
-- use a custom error type to carry the exit code back to `main()`
-- put business logic in a different layer of abstraction from `package main`
+- прийняти необроблені аргументи командного рядка (наприклад, `run(os.Args[1:])`)
+- розібрати аргументи командного рядка в `main()` та передати їх до функції `run`.
+- використовувати спеціальний тип помилки для передачі коду завершення роботи назад в `main()`
+- винести бізнес-логіку на інший рівень абстракції, ніж `package main`.
 
-This guidance only requires that there's a single place in your `main()`
-responsible for actually exiting the process.
+Ці настанови вимагають, щоб у вашому `main()` було єдине місце, яке відповідає за фактичний вихід з процесу.

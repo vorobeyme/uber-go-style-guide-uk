@@ -1,13 +1,13 @@
-# Don't Panic
+# Уникайте паніки
 
-Code running in production must avoid panics. Panics are a major source of
-[cascading failures]. If an error occurs, the function must return an error and
-allow the caller to decide how to handle it.
+Код, який працює у виробничому середовищі (production), повинен уникати паніки.
+Паніка є основним джерелом [каскадних збоїв]. Якщо виникає помилка,
+функція повинна повернути помилку та дозволити користувачу вирішити, як її обробити.
 
-  [cascading failures]: https://en.wikipedia.org/wiki/Cascading_failure
+  [каскадних збоїв]: https://en.wikipedia.org/wiki/Cascading_failure
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -46,20 +46,20 @@ func main() {
 </td></tr>
 </tbody></table>
 
-Panic/recover is not an error handling strategy. A program must panic only when
-something irrecoverable happens such as a nil dereference. An exception to this is
-program initialization: bad things at program startup that should abort the
-program may cause panic.
+Panic/recover не є стратегією обробки помилок. Програма повинна панікувати лише тоді,
+коли трапляється щось непоправне, наприклад, nil розіменування (nil dereference).
+Винятком є ініціалізація програми: помилки під час запуску програми, які мають
+порушити роботу програми, можуть викликати паніку.
 
 ```go
 var _statusTemplate = template.Must(template.New("name").Parse("_statusHTML"))
 ```
 
-Even in tests, prefer `t.Fatal` or `t.FailNow` over panics to ensure that the
-test is marked as failed.
+Навіть у тестах віддавайте перевагу `t.Fatal` або `t.FailNow` замість паніки,
+щоб гарантувати, що тест буде позначено як невдалий.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 

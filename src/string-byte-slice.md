@@ -1,10 +1,10 @@
-# Avoid repeated string-to-byte conversions
+# Уникайте конвертації string в byte
 
-Do not create byte slices from a fixed string repeatedly. Instead, perform the
-conversion once and capture the result.
+Не створюйте зріз байтів із фіксованого рядка декілька разів.
+Натомість виконайте конвертування один раз і збережіть результат.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 

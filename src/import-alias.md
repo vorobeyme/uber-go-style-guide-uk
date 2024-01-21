@@ -1,7 +1,7 @@
-# Import Aliasing
+# Імпорт псевдонімів
 
-Import aliasing must be used if the package name does not match the last
-element of the import path.
+Псевдонім імпорту слід використовувати, якщо назва пакета не збігається з останнім
+елементом шляху імпорту.
 
 ```go
 import (
@@ -12,11 +12,10 @@ import (
 )
 ```
 
-In all other scenarios, import aliases should be avoided unless there is a
-direct conflict between imports.
+У всіх інших сценаріях слід уникати псевдонімів імпорту, якщо немає прямого конфлікту між імпортами.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 

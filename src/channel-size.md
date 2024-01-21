@@ -1,27 +1,25 @@
-# Channel Size is One or None
+# Розмір каналу дорівнює одиниці або відсутній
 
-Channels should usually have a size of one or be unbuffered. By default,
-channels are unbuffered and have a size of zero. Any other size
-must be subject to a high level of scrutiny. Consider how the size is
-determined, what prevents the channel from filling up under load and blocking
-writers, and what happens when this occurs.
+Зазвичай канали повинні мати розмір, який дорівнює одиниці або ж бути небуферизованими.
+За замовчуванням, канали небуферизовані та мають нульовий розмір. Будь-який інший розмір
+повинен ретельно контролюватися. Розглянемо, як визначається розмір, що запобігає переповненню каналу під навантаженням і блокуванню записів, і що відбувається, коли такий сценарій трапляється.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
 ```go
-// Ought to be enough for anybody!
+// Має вистачити для всіх!
 c := make(chan int, 64)
 ```
 
 </td><td>
 
 ```go
-// Size of one
-c := make(chan int, 1) // or
-// Unbuffered channel, size of zero
+// Розмір дорівнює одиниці
+c := make(chan int, 1)
+// або небуферизований канал, розмір дорівнює нулю
 c := make(chan int)
 ```
 

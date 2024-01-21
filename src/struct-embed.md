@@ -1,11 +1,10 @@
-# Embedding in Structs
+# Вбудовування в структури
 
-Embedded types should be at the top of the field list of a
-struct, and there must be an empty line separating embedded fields from regular
-fields.
+Вбудовані типи повинні бути у верхній частині списку полів структури,
+також повинен бути порожній рядок, який відокремлює вбудовані поля від звичайних полів.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -29,49 +28,45 @@ type Client struct {
 </td></tr>
 </tbody></table>
 
-Embedding should provide tangible benefit, like adding or augmenting
-functionality in a semantically-appropriate way. It should do this with zero
-adverse user-facing effects (see also: [Avoid Embedding Types in Public Structs]).
+Вбудовування має забезпечувати відчутні переваги, як-от додавання або розширення функціональності
+семантично прийнятним способом. Це повинно робитись без негативних наслідків для користувача
+(див. також: [уникайте вбудовування типів у публічні структури](embed-public.md)).
 
-Exception: Mutexes should not be embedded, even on unexported types. See also: [Zero-value Mutexes are Valid].
+Виняток: м'ютекси не можна вбудовувати, навіть у не експортовані типи (див. [дозволене використання м'ютексів з нульовими значеннями](mutex-zero-value.md)).
 
-  [Avoid Embedding Types in Public Structs]: #avoid-embedding-types-in-public-structs
-  [Zero-value Mutexes are Valid]: #zero-value-mutexes-are-valid
+Вбудовування **не повинно**:
 
-Embedding **should not**:
+- Бути суто косметичними або орієнтованими лише на зручність.
+- Робити зовнішні типи більш складними для створення або використання.
+- Впливати на нульові значення зовнішніх типів.
+  Якщо зовнішній тип має корисне нульове значення, то вбудовування внутрішнього типу не повинно
+  це змінити.
+- Робити публічними функції або поля внутрішнього типу, які жодним чином не пов'язані із зовнішнім типом.
+- Розкривати не експортовані типи.
+- Впливати на семантику копіювання зовнішніх типів.
+- Змінювати API або семантику зовнішнього типу.
+- Вставляти неканонічну форму внутрішнього типу.
+- Розкривати деталі реалізації зовнішнього типу.
+- Дозволяти користувачам спостерігати або контролювати внутрішні елементи.
+- Змінювати загальну поведінку внутрішніх функцій, обгорнувши неочікуваними для користувача способами.
 
-- Be purely cosmetic or convenience-oriented.
-- Make outer types more difficult to construct or use.
-- Affect outer types' zero values. If the outer type has a useful zero value, it
-  should still have a useful zero value after embedding the inner type.
-- Expose unrelated functions or fields from the outer type as a side-effect of
-  embedding the inner type.
-- Expose unexported types.
-- Affect outer types' copy semantics.
-- Change the outer type's API or type semantics.
-- Embed a non-canonical form of the inner type.
-- Expose implementation details of the outer type.
-- Allow users to observe or control type internals.
-- Change the general behavior of inner functions through wrapping in a way that
-  would reasonably surprise users.
 
-Simply put, embed consciously and intentionally. A good litmus test is, "would
-all of these exported inner methods/fields be added directly to the outer type";
-if the answer is "some" or "no", don't embed the inner type - use a field
-instead.
+Простіше кажучи, робіть вбудовування свідомо та цілеспрямовано.
+Хорошим лакмусовим папірцем є запитати себе:
+"чи всі ці експортовані внутрішні методи/поля будуть додані безпосередньо до зовнішнього типу?";
+якщо відповідь "деякі" або "ні", не вставляйте внутрішній тип, замість цього використовуйте поле.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
 ```go
 type A struct {
-    // Bad: A.Lock() and A.Unlock() are
-    //      now available, provide no
-    //      functional benefit, and allow
-    //      users to control details about
-    //      the internals of A.
+    // Погано: A.Lock() і A.Unlock() тепер доступні,
+    //         не забезпечують жодних функціональних переваг
+    //         і дозволяють користувачам контролювати деталі
+    //         внутрішніх елементів A.
     sync.Mutex
 }
 ```
@@ -80,10 +75,9 @@ type A struct {
 
 ```go
 type countingWriteCloser struct {
-    // Good: Write() is provided at this
-    //       outer layer for a specific
-    //       purpose, and delegates work
-    //       to the inner type's Write().
+    // Добре: Write() надається на цьому зовнішньому рівні
+    //        для певної мети та делегує роботу 
+    //        до внутрішнього типу Write().
     io.WriteCloser
 
     count int
@@ -100,31 +94,31 @@ func (w *countingWriteCloser) Write(bs []byte) (int, error) {
 
 ```go
 type Book struct {
-    // Bad: pointer changes zero value usefulness
+    // Погано: вказівник змінює корисне нульове значення
     io.ReadWriter
 
-    // other fields
+    // інші поля
 }
 
-// later
+// далі
 
 var b Book
-b.Read(...)  // panic: nil pointer
-b.String()   // panic: nil pointer
-b.Write(...) // panic: nil pointer
+b.Read(...)  // panic: вказівник nil
+b.String()   // panic: вказівник nil
+b.Write(...) // panic: вказівник nil
 ```
 
 </td><td>
 
 ```go
 type Book struct {
-    // Good: has useful zero value
+    // Добре: має корисне нульове значення
     bytes.Buffer
 
-    // other fields
+    // інші поля
 }
 
-// later
+// далі
 
 var b Book
 b.Read(...)  // ok

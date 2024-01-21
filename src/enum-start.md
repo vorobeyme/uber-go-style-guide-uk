@@ -1,11 +1,11 @@
-# Start Enums at One
+# Починайте перерахування (enum) з одиниці
 
-The standard way of introducing enumerations in Go is to declare a custom type
-and a `const` group with `iota`. Since variables have a 0 default value, you
-should usually start your enums on a non-zero value.
+Стандартним способом впровадження перерахуваннь у Go є оголошення власного типу
+та групи `const` за допомогою `iota`. Оскільки змінні за замовчуванням мають значення, яке дорівнює 0,
+ви зазвичай повинні починати свої перерахування з ненульових значень, наприклад з 1.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -38,8 +38,8 @@ const (
 </td></tr>
 </tbody></table>
 
-There are cases where using the zero value makes sense, for example when the
-zero value case is the desirable default behavior.
+Бувають випадки, коли використання нульового значення має сенс,
+наприклад, в ситуації, коли нульове значення є бажаною поведінкою за замовчуванням.
 
 ```go
 type LogOutput int

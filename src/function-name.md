@@ -1,8 +1,7 @@
-# Function Names
+# Назви функцій
 
-We follow the Go community's convention of using [MixedCaps for function
-names]. An exception is made for test functions, which may contain underscores
-for the purpose of grouping related test cases, e.g.,
-`TestMyFunction_WhatIsBeingTested`.
+Ми дотримуємося конвенцій спільноти Go щодо використання [MixedCaps для імен функцій].
+Виняток зроблено для тестових функцій, які можуть містити підкреслення з метою групування
+пов'язаних тестів, наприклад, `TestMyFunction_WhatIsBeingTested`.
 
-  [MixedCaps for function names]: https://golang.org/doc/effective_go.html#mixed-caps
+  [MixedCaps для імен функцій]: https://golang.org/doc/effective_go.html#mixed-caps

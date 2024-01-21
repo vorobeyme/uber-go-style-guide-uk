@@ -1,17 +1,17 @@
-# Use go.uber.org/atomic
+# Використовуйте go.uber.org/atomic
 
-Atomic operations with the [sync/atomic] package operate on the raw types
-(`int32`, `int64`, etc.) so it is easy to forget to use the atomic operation to
-read or modify the variables.
+Атомарні операції з пакетом [sync/atomic] працюють із необробленими типами
+(`int32`, `int64` тощо), тому легко забути використовувати атомарну операцію
+для читання або модифікації змінних.
 
-[go.uber.org/atomic] adds type safety to these operations by hiding the
-underlying type. Additionally, it includes a convenient `atomic.Bool` type.
+[go.uber.org/atomic] додає цим операціям захист типу, приховуючи базовий тип.
+Крім того, він містить зручний тип `atomic.Bool`.
 
   [go.uber.org/atomic]: https://godoc.org/go.uber.org/atomic
   [sync/atomic]: https://golang.org/pkg/sync/atomic/
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -22,10 +22,10 @@ type foo struct {
 
 func (f* foo) start() {
   if atomic.SwapInt32(&f.running, 1) == 1 {
-     // already running…
+     // вже працює…
      return
   }
-  // start the Foo
+  // запустіть Foo
 }
 
 func (f *foo) isRunning() bool {
@@ -42,10 +42,10 @@ type foo struct {
 
 func (f *foo) start() {
   if f.running.Swap(true) {
-     // already running…
+     // вже працює…
      return
   }
-  // start the Foo
+  // запустіть Foo
 }
 
 func (f *foo) isRunning() bool {

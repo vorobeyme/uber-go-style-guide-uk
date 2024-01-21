@@ -1,16 +1,15 @@
-# Functional Options
+# Функціональні параметри
 
-Functional options is a pattern in which you declare an opaque `Option` type
-that records information in some internal struct. You accept a variadic number
-of these options and act upon the full information recorded by the options on
-the internal struct.
+Функціональні параметри – це шаблон, у якому ви оголошуєте непрозорий тип `Option`,
+який записує інформацію в деяку внутрішню структуру. Ви можете приймати різну
+кількість цих параметрів і діяти відповідно до повної інформації,
+записаної параметрами у внутрішній структурі.
 
-Use this pattern for optional arguments in constructors and other public APIs
-that you foresee needing to expand, especially if you already have three or
-more arguments on those functions.
+Використовуйте цей шаблон для необов'язкових аргументів у конструкторах та інших
+публічних API, які ви передбачаєте розширювати, особливо якщо ви вже маєте три або більше аргументів у цих функціях..
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -43,7 +42,7 @@ func WithLogger(log *zap.Logger) Option {
   // ...
 }
 
-// Open creates a connection.
+// Open створює з'єднання.
 func Open(
   addr string,
   opts ...Option,
@@ -55,8 +54,8 @@ func Open(
 </td></tr>
 <tr><td>
 
-The cache and logger parameters must always be provided, even if the user
-wants to use the default.
+Параметри cache та logger мають бути надані завжди,
+навіть якщо користувач хоче використовувати параметри за замовчуванням.
 
 ```go
 db.Open(addr, db.DefaultCache, zap.NewNop())
@@ -67,7 +66,7 @@ db.Open(addr, false /* cache */, log)
 
 </td><td>
 
-Options are provided only if needed.
+Параметри надаються лише за потреби.
 
 ```go
 db.Open(addr)
@@ -83,9 +82,8 @@ db.Open(
 </td></tr>
 </tbody></table>
 
-Our suggested way of implementing this pattern is with an `Option` interface
-that holds an unexported method, recording options on an unexported `options`
-struct.
+Ми пропонуємо реалізувати цей шаблон за допомогою інтерфейсу `Option`,
+який містить не експортований метод, що записує параметри в не експортовану структуру `options`.
 
 ```go
 type options struct {
@@ -119,7 +117,7 @@ func WithLogger(log *zap.Logger) Option {
   return loggerOption{Log: log}
 }
 
-// Open creates a connection.
+// Open створює з'єднання.
 func Open(
   addr string,
   opts ...Option,
@@ -137,21 +135,18 @@ func Open(
 }
 ```
 
-Note that there's a method of implementing this pattern with closures but we
-believe that the pattern above provides more flexibility for authors and is
-easier to debug and test for users. In particular, it allows options to be
-compared against each other in tests and mocks, versus closures where this is
-impossible. Further, it lets options implement other interfaces, including
-`fmt.Stringer` which allows for user-readable string representations of the
-options.
+Зауважте, що існує метод реалізації цього шаблону за допомогою замикань, але ми вважаємо,
+що наведений вище шаблон забезпечує більшу гнучкість для авторів і є більш простим у налагодженні та тестуванні для користувачів. Зокрема, він дозволяє порівнювати варіанти між собою у тестах та макетах (mocks), проти замикань, де це неможливо. Крім того, це дозволяє варіантам реалізовувати
+інші інтерфейси, зокрема `fmt.Stringer`, який дозволяє зрозумілі для користувача рядкові
+представлення параметрів.
 
-See also,
+Дивіться також,
 
-- [Self-referential functions and the design of options]
-- [Functional options for friendly APIs]
+- [Самореференційні функції та дизайн опцій]
+- [Функціональні параметри для зручних API]
 
-  [Self-referential functions and the design of options]: https://commandcenter.blogspot.com/2014/01/self-referential-functions-and-design.html
-  [Functional options for friendly APIs]: https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
+  [Самореференційні функції та дизайн опцій]: https://commandcenter.blogspot.com/2014/01/self-referential-functions-and-design.html
+  [Функціональні параметри для зручних API]: https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
 
 <!-- TODO: replace this with parameter structs and functional options, when to
 use one vs other -->

@@ -1,15 +1,14 @@
-# Verify Interface Compliance
+# Перевірка відповідності інтерфейсу
 
-Verify interface compliance at compile time where appropriate. This includes:
+Якщо необхідно, перевірте відповідність інтерфейсу під час компіляції. Це включає:
 
-- Exported types that are required to implement specific interfaces as part of
-  their API contract
-- Exported or unexported types that are part of a collection of types
-  implementing the same interface
-- Other cases where violating an interface would break users
+- Експортовані типи, які необхідні для реалізації певних інтерфейсів згідно з контрактом API
+- Експортовані або не експортовані типи, які є частиною групи типів, що реалізують той самий інтерфейс
+- Інші випадки, коли недотримання інтерфейсу може спричинити проблеми для користувачів
+
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -24,7 +23,7 @@ func (h *Handler) ServeHTTP(
   w http.ResponseWriter,
   r *http.Request,
 ) {
-  ...
+  // ...
 }
 ```
 
@@ -48,12 +47,12 @@ func (h *Handler) ServeHTTP(
 </td></tr>
 </tbody></table>
 
-The statement `var _ http.Handler = (*Handler)(nil)` will fail to compile if
-`*Handler` ever stops matching the `http.Handler` interface.
+Оператор `var _ http.Handler = (*Handler)(nil)` не вдасться скомпілювати, якщо
+`*Handler` перестане відповідати інтерфейсу `http.Handler`.
 
-The right hand side of the assignment should be the zero value of the asserted
-type. This is `nil` for pointer types (like `*Handler`), slices, and maps, and
-an empty struct for struct types.
+Права сторона призначення має бути нульовим значенням (zero-value) заявленого типу.
+Це `nil` для вказівників (як `*Handler`), зрізів (slices) і карт (maps), а також
+порожня структура для типів структур.
 
 ```go
 type LogHandler struct {

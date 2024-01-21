@@ -1,14 +1,12 @@
-# Pointers to Interfaces
+# Вказівники на інтерфейси
 
-You almost never need a pointer to an interface. You should be passing
-interfaces as values—the underlying data can still be a pointer.
+Вам майже ніколи не знадобиться вказівник на інтерфейс. Ви повинні передавати інтерфейси за значенням,
+оскільки дані, що лежать в основі, завжди можуть бути вказівником.
 
-An interface is two fields:
+Інтерфейс складається з двох полів:
 
-1. A pointer to some type-specific information. You can think of this as
-  "type."
-2. Data pointer. If the data stored is a pointer, it’s stored directly. If
-  the data stored is a value, then a pointer to the value is stored.
+1. Вказівник на певну інформацію про тип. Він представлений як "тип".
+2. Вказівник на дані. Якщо дані містять вказівник, вони зберігаються напряму.
+   Якщо дані містять значення, то зберігається вказівник на це значення.
 
-If you want interface methods to modify the underlying data, you must use a
-pointer.
+Якщо ви хочете, щоб методи інтерфейсу могли б змінювати базові дані, то вам слід використовувати вказівник.

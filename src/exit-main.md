@@ -1,16 +1,16 @@
-# Exit in Main
+# Вихід в Main
 
-Go programs use [`os.Exit`] or [`log.Fatal*`] to exit immediately. (Panicking
-is not a good way to exit programs, please [don't panic](panic.md).)
+Програми Go використовують [`os.Exit`] або [`log.Fatal*`] для негайного виходу.
+Паніка не є хорошим способом виходу з програм, будь ласка, [уникайте паніки](panic.md).
 
   [`os.Exit`]: https://golang.org/pkg/os/#Exit
   [`log.Fatal*`]: https://golang.org/pkg/log/#Fatal
 
-Call one of `os.Exit` or `log.Fatal*` **only in `main()`**. All other
-functions should return errors to signal failure.
+Викликайте `os.Exit` або `log.Fatal*` **лише в `main()`**.
+Усі інші функції повинні повертати помилки, щоб повідомляти про збій.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -64,13 +64,13 @@ func readFile(path string) (string, error) {
 </td></tr>
 </tbody></table>
 
-Rationale: Programs with multiple functions that exit present a few issues:
+Обґрунтування: програми з кількома функціями, які містять вихід, створюють кілька проблем:
 
-- Non-obvious control flow: Any function can exit the program so it becomes
-  difficult to reason about the control flow.
-- Difficult to test: A function that exits the program will also exit the test
-  calling it. This makes the function difficult to test and introduces risk of
-  skipping other tests that have not yet been run by `go test`.
-- Skipped cleanup: When a function exits the program, it skips function calls
-  enqueued with `defer` statements. This adds risk of skipping important
-  cleanup tasks.
+- Неочевидний потік керування: будь-яка функція може вийти з програми,
+  тому стає важко міркувати про потік керування.
+- Важко тестувати: функція, яка виходить з програми, також вийде із тесту, який її викликає.
+  Це ускладнює тестування функції та створює ризик пропуску інших тестів,
+  які ще не були запущені `go test`.
+- Пропущене звільнення ресурсів: коли функція виходить з програми, вона пропускає виклики функцій,
+  поставлених у чергу з операторами `defer`. Це збільшує ризик пропуску важливих завдань очищення
+  (звільнення ресурсів).

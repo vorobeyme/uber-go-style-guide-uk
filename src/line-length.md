@@ -1,9 +1,8 @@
-# Avoid overly long lines
+# Уникайте надто довгих рядків
 
-Avoid lines of code that require readers to scroll horizontally
-or turn their heads too much.
+Уникайте рядків коду, які вимагають від читачів горизонтальної прокрутки
+або надто сильного повороту голови.
 
-We recommend a soft line length limit of **99 characters**.
-Authors should aim to wrap lines before hitting this limit,
-but it is not a hard limit.
-Code is allowed to exceed this limit.
+Ми рекомендуємо обмежити довжину м'якого рядка (soft line) до **99 символів**.
+Автори повинні прагнути до того, щоб не виходити за рамки цих обмежень,
+хоча ці обмеження не є жорсткими. Код може перевищувати цю межу.

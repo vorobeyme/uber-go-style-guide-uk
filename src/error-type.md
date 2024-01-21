@@ -1,38 +1,37 @@
-# Error Types
+# Типи помилок
 
-There are few options for declaring errors.
-Consider the following before picking the option best suited for your use case.
+Існує кілька варіантів оголошення помилок.
+Перш ніж вибрати варіант, який найкраще підходить для вашого випадку, врахуйте наступне.
 
-- Does the caller need to match the error so that they can handle it?
-  If yes, we must support the [`errors.Is`] or [`errors.As`] functions
-  by declaring a top-level error variable or a custom type.
-- Is the error message a static string,
-  or is it a dynamic string that requires contextual information?
-  For the former, we can use [`errors.New`], but for the latter we must
-  use [`fmt.Errorf`] or a custom error type.
-- Are we propagating a new error returned by a downstream function?
-  If so, see the [section on error wrapping](error-wrap.md).
+- Чи потрібно користувачеві зіставляти помилку з іншим типом помилки, щоб обробити її?
+  Якщо так, нам потрібно підтримувати функції [`errors.Is`] або [`errors.As`],
+  оголошуючи змінну помилки вищого рівня або власного (кастомного) типу.
+- Повідомлення про помилку це статичний рядок чи динамічний, для якого потрібна
+  контекстна інформація?
+  Для першого ми можемо використовувати [`errors.New`], але для останнього ми повинні
+  використовувати [`fmt.Errorf`] або власний тип помилки.
+- Передаєте помилку з функцій, яка розташована нижче по стеку викликів?
+  Тоді перегляньте [розділ про обгортання помилок](error-wrap.md).
 
-[`errors.Is`]: https://golang.org/pkg/errors/#Is
-[`errors.As`]: https://golang.org/pkg/errors/#As
+  [`errors.Is`]: https://golang.org/pkg/errors/#Is
+  [`errors.As`]: https://golang.org/pkg/errors/#As
 
-| Error matching? | Error Message | Guidance                            |
-|-----------------|---------------|-------------------------------------|
-| No              | static        | [`errors.New`]                      |
-| No              | dynamic       | [`fmt.Errorf`]                      |
-| Yes             | static        | top-level `var` with [`errors.New`] |
-| Yes             | dynamic       | custom `error` type                 |
+| Зіставлення помилки? | Повідомлення про помилку | Рекомендація                           |
+|----------------------|--------------------------|----------------------------------------|
+| ні                   | статична                 | [`errors.New`]                         |
+| ні                   | динамічна                | [`fmt.Errorf`]                         |
+| так                  | статична                 | верхнього рівня `var` з [`errors.New`] |
+| так                  | динамічна                | власний тип `error`                    |
 
-[`errors.New`]: https://golang.org/pkg/errors/#New
-[`fmt.Errorf`]: https://golang.org/pkg/fmt/#Errorf
+  [`errors.New`]: https://golang.org/pkg/errors/#New
+  [`fmt.Errorf`]: https://golang.org/pkg/fmt/#Errorf
 
-For example,
-use [`errors.New`] for an error with a static string.
-Export this error as a variable to support matching it with `errors.Is`
-if the caller needs to match and handle this error.
+Наприклад, використовуйте [`errors.New`] для помилки зі статичним рядком.
+Якщо користувачеві потрібно знайти відповідність і обробити помилку, експортуйте цю помилку
+як змінну, щоб була підтримка зіставлення з `errors.Is`.
 
 <table>
-<thead><tr><th>No error matching</th><th>Error matching</th></tr></thead>
+<thead><tr><th>Немає зіставлення помилки</th><th>Зіставлення помилки</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -46,7 +45,7 @@ func Open() error {
 // package bar
 
 if err := foo.Open(); err != nil {
-  // Can't handle the error.
+  // Не можливо обробити помилку
   panic("unknown error")
 }
 ```
@@ -66,7 +65,7 @@ func Open() error {
 
 if err := foo.Open(); err != nil {
   if errors.Is(err, foo.ErrCouldNotOpen) {
-    // handle the error
+    // Обробка помилки
   } else {
     panic("unknown error")
   }
@@ -76,12 +75,10 @@ if err := foo.Open(); err != nil {
 </td></tr>
 </tbody></table>
 
-For an error with a dynamic string,
-use [`fmt.Errorf`] if the caller does not need to match it,
-and a custom `error` if the caller does need to match it.
+Для помилки з динамічним рядком, використовуйте [`fmt.Errorf`], якщо користувачеві не потрібно виконувати зіставлення помилки з іншим типом помилки або власний `error`, якщо потрібно.
 
 <table>
-<thead><tr><th>No error matching</th><th>Error matching</th></tr></thead>
+<thead><tr><th>Немає зіставлення помилки</th><th>Зіставлення помилки</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -95,7 +92,7 @@ func Open(file string) error {
 // package bar
 
 if err := foo.Open("testfile.txt"); err != nil {
-  // Can't handle the error.
+  // Не можливо обробити помилку
   panic("unknown error")
 }
 ```
@@ -123,7 +120,7 @@ func Open(file string) error {
 if err := foo.Open("testfile.txt"); err != nil {
   var notFound *NotFoundError
   if errors.As(err, &notFound) {
-    // handle the error
+    // Обробка помилки
   } else {
     panic("unknown error")
   }
@@ -133,5 +130,5 @@ if err := foo.Open("testfile.txt"); err != nil {
 </td></tr>
 </tbody></table>
 
-Note that if you export error variables or types from a package,
-they will become part of the public API of the package.
+Врахуйте, якщо ви експортуєте змінні або типи помилок із пакета,
+вони стануть частиною загальнодоступного API пакета.

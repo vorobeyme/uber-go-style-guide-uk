@@ -1,26 +1,25 @@
-# Avoid `init()`
+# Уникайте `init()`
 
-Avoid `init()` where possible. When `init()` is unavoidable or desirable, code
-should attempt to:
+Уникайте `init()` де це можливо. Якщо використання `init()` неминуче або ж бажане,
+ваш код повинен:
 
-1. Be completely deterministic, regardless of program environment or invocation.
-2. Avoid depending on the ordering or side-effects of other `init()` functions.
-   While `init()` ordering is well-known, code can change, and thus
-   relationships between `init()` functions can make code brittle and
-   error-prone.
-3. Avoid accessing or manipulating global or environment state, such as machine
-   information, environment variables, working directory, program
-   arguments/inputs, etc.
-4. Avoid I/O, including both filesystem, network, and system calls.
+1. Бути повністю детермінованим, незалежно від програмного середовища чи виклику.
+2. Уникайте залежності від порядку або побічних ефектів інших функцій `init()`.
+   Хоча порядок виклику `init()` добре відомий, код може змінюватися, і відповідно зв'язки
+   між функціями `init()` можуть зробити код крихким та схильним до помилок.
+3. Уникайте доступу або маніпулювання глобальним станом або станом середовища,
+   таким як інформація про систему, змінні середовища, робочий каталог,
+   аргументи виклику, вхідні дані програми тощо.
+4. Уникайте операцій вводу-виводу (I/O), включаючи файлову систему, мережу та системні виклики.
 
-Code that cannot satisfy these requirements likely belongs as a helper to be
-called as part of `main()` (or elsewhere in a program's lifecycle), or be
-written as part of `main()` itself. In particular, libraries that are intended
-to be used by other programs should take special care to be completely
-deterministic and not perform "init magic".
+Код, який не відповідає наведеним вище вимогам, швидше за все, буде допоміжним кодом,
+який буде викликатися як частина `main()` (або в іншому місці життєвого циклу програми),
+або буде написаний як частина самого `main()`.
+Зокрема, бібліотеки, що призначені для використання іншими програмами, повинні бути
+особливо обережними, щоб бути повністю детермінованими та не виконувати "магію ініціалізації".
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -45,7 +44,7 @@ var _defaultFoo = Foo{
     // ...
 }
 
-// or, better, for testability:
+//  або так, краще для тестування:
 
 var _defaultFoo = defaultFoo()
 
@@ -67,10 +66,10 @@ type Config struct {
 var _config Config
 
 func init() {
-    // Bad: based on current directory
+    // Не рекомендовано: на основі поточного каталогу
     cwd, _ := os.Getwd()
 
-    // Bad: I/O
+    // Не рекомендовано: I/O
     raw, _ := os.ReadFile(
         path.Join(cwd, "config", "config.yaml"),
     )
@@ -88,12 +87,12 @@ type Config struct {
 
 func loadConfig() Config {
     cwd, err := os.Getwd()
-    // handle err
+    // обробка помилки
 
     raw, err := os.ReadFile(
         path.Join(cwd, "config", "config.yaml"),
     )
-    // handle err
+    // обробка помилки
 
     var config Config
     yaml.Unmarshal(raw, &config)
@@ -105,12 +104,11 @@ func loadConfig() Config {
 </td></tr>
 </tbody></table>
 
-Considering the above, some situations in which `init()` may be preferable or
-necessary might include:
+Враховуючи вищезазначене, деякі ситуації, в яких `init()` може бути кращим або необхідним,
+можуть включати:
 
-- Complex expressions that cannot be represented as single assignments.
-- Pluggable hooks, such as `database/sql` dialects, encoding type registries, etc.
-- Optimizations to [Google Cloud Functions] and other forms of deterministic
-  precomputation.
+- Складні вирази, які не можна представити як окреме призначення.
+- Підключаються хуки, такі як діалекти `database/sql`, реєстри типів кодування тощо.
+- Оптимізація для [Google Cloud Functions] та інших форм детермінованих попередніх обчислень.
 
   [Google Cloud Functions]: https://cloud.google.com/functions/docs/bestpractices/tips#use_global_variables_to_reuse_objects_in_future_invocations

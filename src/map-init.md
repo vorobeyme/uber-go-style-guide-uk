@@ -1,19 +1,18 @@
-# Initializing Maps
+# Ініціалізація карт
 
-Prefer `make(..)` for empty maps, and maps populated
-programmatically. This makes map initialization visually
-distinct from declaration, and it makes it easy to add size
-hints later if available.
+Надавайте перевагу функції `make(..)` для порожніх карт і карт, що заповнені програмно.
+Це робить ініціалізацію карт візуально відмінним від оголошення,
+а також дозволяє простіше вказувати розмір карти пізніше, якщо доступно.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
 ```go
 var (
-  // m1 is safe to read and write;
-  // m2 will panic on writes.
+  // m1 безпечний для читання та запису;
+  // m2 буде паніка під час запису.
   m1 = map[T1]T2{}
   m2 map[T1]T2
 )
@@ -23,8 +22,8 @@ var (
 
 ```go
 var (
-  // m1 is safe to read and write;
-  // m2 will panic on writes.
+  // m1 безпечний для читання та запису;
+  // m2 буде паніка під час запису.
   m1 = make(map[T1]T2)
   m2 map[T1]T2
 )
@@ -33,25 +32,23 @@ var (
 </td></tr>
 <tr><td>
 
-Declaration and initialization are visually similar.
+Оголошення та ініціалізація візуально схожі.
 
 </td><td>
 
-Declaration and initialization are visually distinct.
+Оголошення та ініціалізація візуально відрізняються.
 
 </td></tr>
 </tbody></table>
 
-Where possible, provide capacity hints when initializing
-maps with `make()`. See
-[Specifying Map Capacity Hints](container-capacity.md#specifying-map-capacity-hints)
-for more information.
+Якщо це можливо, вказуйте місткість під час ініціалізації карт за допомогою функції `make()`.
+Додаткову інформацію дивіться в розділі [вказуйте місткість для карт](#вказуйте-місткість-для-карт).
 
-On the other hand, if the map holds a fixed list of elements,
-use map literals to initialize the map.
+З іншого боку, якщо карта містить фіксований список елементів,
+використовуйте літерали карти, щоб ініціалізувати карту.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -75,6 +72,5 @@ m := map[T1]T2{
 </td></tr>
 </tbody></table>
 
-The basic rule of thumb is to use map literals when adding a fixed set of
-elements at initialization time, otherwise use `make` (and specify a size hint
-if available).
+Основне правило полягає в тому, щоб використовувати літерали карт під час
+додавання фіксованого набору елементів при ініціалізації, інакше використовуйте `make` та вкажіть розмір, якщо це можливо.

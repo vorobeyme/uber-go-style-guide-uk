@@ -1,17 +1,14 @@
-# Linting
+# Інструменти аналізу коду (лінтери)
 
-More importantly than any "blessed" set of linters, lint consistently across a
-codebase.
+Ключовим аспектом є не просто набір "обраних" лінтерів, а послідовність їх використання в усій кодовій базі.
 
-We recommend using the following linters at a minimum, because we feel that they
-help to catch the most common issues and also establish a high bar for code
-quality without being unnecessarily prescriptive:
+Ми рекомендуємо використовувати принаймні такі лінтери, оскільки вважаємо, що вони не лише допомагають виявити найпоширеніші проблеми, але й встановлюють високий стандарт якості коду:
 
-- [errcheck] to ensure that errors are handled
-- [goimports] to format code and manage imports
-- [golint] to point out common style mistakes
-- [govet] to analyze code for common mistakes
-- [staticcheck] to do various static analysis checks
+- [errcheck] - для переконання, що помилки обробляються відповідним чином
+- [goimports] - забезпечує форматування коду та управління імпортом
+- [golint] - вказує на типові стилістичні недоліки та допомагає їх виправляти
+- [govet] - забезпечує аналіз коду для виявлення типових програмних помилок
+- [staticcheck] - виконує різноманітні перевірки статичного аналізу коду
 
   [errcheck]: https://github.com/kisielk/errcheck
   [goimports]: https://godoc.org/golang.org/x/tools/cmd/goimports
@@ -19,17 +16,18 @@ quality without being unnecessarily prescriptive:
   [govet]: https://golang.org/cmd/vet/
   [staticcheck]: https://staticcheck.io/
 
-## Lint Runners
+## Запуск лінтерів
 
-We recommend [golangci-lint] as the go-to lint runner for Go code, largely due
-to its performance in larger codebases and ability to configure and use many
-canonical linters at once. This repo has an example [.golangci.yml] config file
-with recommended linters and settings.
+Ми рекомендуємо [golangci-lint] як засіб запуску лінтів для коду Go,
+головним чином завдяки його продуктивності у великих базах коду, а також можливості
+налаштовувати та використовувати багато канонічних лінтерів одночасно.
+Цей репозиторій містить приклад конфігураційного файлу [.golangci.yml]
+із рекомендованими лінтерами та їх налаштуваннями.
 
-golangci-lint has [various linters] available for use. The above linters are
-recommended as a base set, and we encourage teams to add any additional linters
-that make sense for their projects.
+`golangci-lint` має різні [додаткові лінтери], що доступні для використання.
+Наведені вище лінтери рекомендовано як базовий набір і ми заохочуємо команди
+додавати будь-які додаткові лінтери, які потрібні для їхніх проектів.
 
   [golangci-lint]: https://github.com/golangci/golangci-lint
   [.golangci.yml]: https://github.com/uber-go/guide/blob/master/.golangci.yml
-  [various linters]: https://golangci-lint.run/usage/linters/
+  [додаткові лінтери]: https://golangci-lint.run/usage/linters/

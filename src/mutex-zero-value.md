@@ -1,10 +1,10 @@
-# Zero-value Mutexes are Valid
+# Дозволене використання м'ютексів (mutex) з нульовими значеннями
 
-The zero-value of `sync.Mutex` and `sync.RWMutex` is valid, so you almost
-never need a pointer to a mutex.
+Нульові значення (zero-value) `sync.Mutex` та `sync.RWMutex` є правильними, тому вам майже ніколи
+не потрібно використовувати вказівник на м'ютекс.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -23,11 +23,11 @@ mu.Lock()
 </td></tr>
 </tbody></table>
 
-If you use a struct by pointer, then the mutex should be a non-pointer field on
-it. Do not embed the mutex on the struct, even if the struct is not exported.
+Якщо ви використовуєте структуру за вказівником, тоді м'ютекс має бути полем без вказівника.
+Не вбудовуйте м'ютекс у структуру, навіть якщо структуру не було експортовано.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -79,13 +79,11 @@ func (m *SMap) Get(k string) string {
 
 <tr><td>
 
-The `Mutex` field, and the `Lock` and `Unlock` methods are unintentionally part
-of the exported API of `SMap`.
+Поле `Mutex` та методи `Lock` і `Unlock` ненавмисно є частиною експортованого API `SMap`.
 
 </td><td>
 
-The mutex and its methods are implementation details of `SMap` hidden from its
-callers.
+М'ютекс та його методи є деталями реалізації `SMap`, прихованими від тих, хто їх викликає.
 
 </td></tr>
 </tbody></table>

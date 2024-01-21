@@ -1,29 +1,30 @@
-# Avoid Using Built-In Names
+# Уникайте використання вбудованих імен
 
-The Go [language specification] outlines several built-in,
-[predeclared identifiers] that should not be used as names within Go programs.
+У [специфікації мови] Go описано декілька вбудованих,
+[попередньо визначених ідентифікаторів], які не слід використовувати як імена в програмах Go.
 
-Depending on context, reusing these identifiers as names will either shadow
-the original within the current lexical scope (and any nested scopes) or make
-affected code confusing. In the best case, the compiler will complain; in the
-worst case, such code may introduce latent, hard-to-grep bugs.
+Залежно від контексту, повторне використання цих ідентифікаторів як імен
+або приховає оригінал у межах поточної лексичної області (і будь-яких вкладених областях),
+або зробить код заплутаним.
+У кращому випадку можна очікувати попереджень від компілятора, у гіршому - такий
+код може створити приховані помилки, які важко помітити.
 
-  [language specification]: https://golang.org/ref/spec
-  [predeclared identifiers]: https://golang.org/ref/spec#Predeclared_identifiers
+  [специфікації мови]: https://golang.org/ref/spec
+  [попередньо визначених ідентифікаторів]: https://golang.org/ref/spec#Predeclared_identifiers
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
 ```go
 var error string
-// `error` shadows the builtin
+// `error` приховує таке ж саме вбудоване ім'я 
 
-// or
+// або
 
 func handleErrorMessage(error string) {
-    // `error` shadows the builtin
+    // `error` приховує вбудоване ім'я
 }
 ```
 
@@ -31,12 +32,12 @@ func handleErrorMessage(error string) {
 
 ```go
 var errorMessage string
-// `error` refers to the builtin
+// `error` відноситься до вбудованого імені
 
-// or
+// або
 
 func handleErrorMessage(msg string) {
-    // `error` refers to the builtin
+    // `error` відноситься до вбудованого імені
 }
 ```
 
@@ -45,23 +46,20 @@ func handleErrorMessage(msg string) {
 
 ```go
 type Foo struct {
-    // While these fields technically don't
-    // constitute shadowing, grepping for
-    // `error` or `string` strings is now
-    // ambiguous.
+    // Хоча ці поля технічно не приховують
+    // вбудовані імена, пошук для рядків `error` або` string`
+    // дає неоднозначні результатти.
     error  error
     string string
 }
 
 func (f Foo) Error() error {
-    // `error` and `f.error` are
-    // visually similar
+    // `error` та `f.error` візуально схожі
     return f.error
 }
 
 func (f Foo) String() string {
-    // `string` and `f.string` are
-    // visually similar
+    // `error` та `f.error` візуально схожі
     return f.string
 }
 ```
@@ -70,8 +68,7 @@ func (f Foo) String() string {
 
 ```go
 type Foo struct {
-    // `error` and `string` strings are
-    // now unambiguous.
+    // Рядки `error` and `string` тепер однозначні.
     err error
     str string
 }
@@ -88,6 +85,6 @@ func (f Foo) String() string {
 </td></tr>
 </tbody></table>
 
-Note that the compiler will not generate errors when using predeclared
-identifiers, but tools such as `go vet` should correctly point out these and
-other cases of shadowing.
+Зауважте, що компілятор не генеруватиме помилок під час використання попередньо оголошених
+ідентифікаторів, але такі інструменти, як `go vet`, мають правильно вказувати на ці та інші
+випадки приховування вбудованих імен.

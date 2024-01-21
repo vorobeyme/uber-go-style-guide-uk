@@ -1,12 +1,11 @@
-# nil is a valid slice
+# nil є допустимим зрізом
 
-`nil` is a valid slice of length 0. This means that,
+`nil` є допустимим зрізом, що має довжину та ємність 0. Це означає, що,
 
-- You should not return a slice of length zero explicitly. Return `nil`
-  instead.
+- Не слід явно повертати зріз нульової довжини. Натомість повертайте `nil`.
 
   <table>
-  <thead><tr><th>Bad</th><th>Good</th></tr></thead>
+  <thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
   <tbody>
   <tr><td>
 
@@ -27,11 +26,10 @@
   </td></tr>
   </tbody></table>
 
-- To check if a slice is empty, always use `len(s) == 0`. Do not check for
-  `nil`.
+- Щоб перевірити, чи порожній зріз, завжди використовуйте `len(s) == 0`. Не перевіряйте його на `nil`.
 
   <table>
-  <thead><tr><th>Bad</th><th>Good</th></tr></thead>
+  <thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
   <tbody>
   <tr><td>
 
@@ -52,11 +50,10 @@
   </td></tr>
   </tbody></table>
 
-- The zero value (a slice declared with `var`) is usable immediately without
-  `make()`.
+- Зріз, який оголошений за допомогою `var` (нульове значення), можна одразу використовувати (без використання `make()`).
 
   <table>
-  <thead><tr><th>Bad</th><th>Good</th></tr></thead>
+  <thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
   <tbody>
   <tr><td>
 
@@ -90,6 +87,6 @@
   </td></tr>
   </tbody></table>
 
-Remember that, while it is a valid slice, a nil slice is not equivalent to an
-allocated slice of length 0 - one is nil and the other is not - and the two may
-be treated differently in different situations (such as serialization).
+Пам'ятайте, що, хоча nil є допустимим зрізом, він не еквівалентний зрізу, якому задано довжину 0.
+Перший зріз nil, а другий ні – тому в різних ситуаціях вони можуть оброблятися по-різному
+(наприклад, серіалізація).

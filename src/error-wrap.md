@@ -1,40 +1,38 @@
-# Error Wrapping
+# Обгортання помилок (wrapping)
 
-There are three main options for propagating errors if a call fails:
+Існує три основні способи поширення помилок у разі невдачі під час виклику:
 
-- return the original error as-is
-- add context with `fmt.Errorf` and the `%w` verb
-- add context with `fmt.Errorf` and the `%v` verb
+- повернути оригінальну помилку "як є"
+- додати контекст за допомогою `fmt.Errorf` та параметру `%w`
+- додати контекст за допомогою `fmt.Errorf` та параметру `%v`
 
-Return the original error as-is if there is no additional context to add.
-This maintains the original error type and message.
-This is well suited for cases when the underlying error message
-has sufficient information to track down where it came from.
+Повернути оригінальну помилку "як є", якщо вам не потрібно додавати додаткову контекстну інформацію.
+Це зберігає вихідний тип помилки та повідомлення.
+Це добре підходить для випадків, коли базове повідомлення про помилку містить
+достатньо інформації, щоб визначити, звідки вона походить.
 
-Otherwise, add context to the error message where possible
-so that instead of a vague error such as "connection refused",
-you get more useful errors such as "call service foo: connection refused".
+В іншому випадку додайте контекст до повідомлення про помилку, де це можливо,
+щоб замість не зрозумілої помилки, як-от "підключення відмовлено", ви отримували
+більш корисні помилки, наприклад "виклик служби foo: підключення відмовлено".
 
-Use `fmt.Errorf` to add context to your errors,
-picking between the `%w` or `%v` verbs
-based on whether the caller should be able to
-match and extract the underlying cause.
+Використовуйте `fmt.Errorf`, щоб додати контекст до ваших помилок, вибираючи між параметрами
+`%w` або `%v` залежно від того, чи повинен коистувач мати можливість знайти та виділити основну причину.
 
-- Use `%w` if the caller should have access to the underlying error.
-  This is a good default for most wrapped errors,
-  but be aware that callers may begin to rely on this behavior.
-  So for cases where the wrapped error is a known `var` or type,
-  document and test it as part of your function's contract.
-- Use `%v` to obfuscate the underlying error.
-  Callers will be unable to match it,
-  but you can switch to `%w` in the future if needed.
+- Використовуйте `%w`, якщо користувач повинен мати доступ до основної помилки.
+  Це хороший варіант за замовчуванням для більшості обгорнутих помилок,
+  але пам'ятайте, що користувачі можуть почати покладатися на таку поведінку.
+  Тож у випадках, коли обгорнута помилка є відомою `зміною` або `типом`,
+  задокументуйте та протестуйте її як частину контракту вашої функції.
+- Використовуйте `%v` для приховування основної помилки.
+  Користувачі не зможуть порівнювати з оригінальною помилкою, але ви можете перемикнутися
+  на `%w` в майбутньому, якщо це буде потрібно.
 
-When adding context to returned errors, keep the context succinct by avoiding
-phrases like "failed to", which state the obvious and pile up as the error
-percolates up through the stack:
+Додаючи контекст до помилок, зберігайте його лаконічним, уникаючи таких фраз,
+як "не вдалося" ("failed to"), які стверджують очевидне та накопичуються,
+коли помилка просочується крізь стек:
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -71,9 +69,9 @@ x: y: new store: the error
 </td></tr>
 </tbody></table>
 
-However once the error is sent to another system, it should be clear the
-message is an error (e.g. an `err` tag or "Failed" prefix in logs).
+Однак після надсилання повідомлення про помилку в іншу систему має бути зрозуміло,
+що повідомлення є помилкою (наприклад, тег `err` або префікс "Failed" в журналах).
 
-See also [Don't just check errors, handle them gracefully].
+Дивіться також публікацію [не просто перевіряйте помилки, обробляйте їх витончено].
 
-  [Don't just check errors, handle them gracefully]: https://dave.cheney.net/2016/04/27/dont-just-check-errors-handle-them-gracefully
+  [не просто перевіряйте помилки, обробляйте їх витончено]: https://dave.cheney.net/2016/04/27/dont-just-check-errors-handle-them-gracefully

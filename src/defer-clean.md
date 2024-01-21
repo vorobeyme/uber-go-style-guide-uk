@@ -1,9 +1,9 @@
-# Defer to Clean Up
+# Defer для звільнення ресурсів
 
-Use defer to clean up resources such as files and locks.
+Використовуйте `defer` для звільнення ресурсів, таких як файли та блокування.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
@@ -20,7 +20,7 @@ p.Unlock()
 
 return newCount
 
-// easy to miss unlocks due to multiple returns
+// легко пропустити розблокування через багаторазове використання return
 ```
 
 </td><td>
@@ -36,14 +36,14 @@ if p.count < 10 {
 p.count++
 return p.count
 
-// more readable
+// виглядає більше читабельно
 ```
 
 </td></tr>
 </tbody></table>
 
-Defer has an extremely small overhead and should be avoided only if you can
-prove that your function execution time is in the order of nanoseconds. The
-readability win of using defers is worth the miniscule cost of using them. This
-is especially true for larger methods that have more than simple memory
-accesses, where the other computations are more significant than the `defer`.
+Defer має надзвичайно низькі витрати ресурсів і тому його слід уникати в тих випадках, якщо ви можете довести,
+що час виконання вашої функції становить наносекунди. Перевага оператора `defer` щодо зручності
+читання вашого коду вартує тих мізерних витрат ресурсів на його використання.
+Це особливо має відношення до більших методів, які мають більше, ніж простий доступ до пам'яті,
+де інші обчислення важливіші ніж `defer`.

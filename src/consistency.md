@@ -1,19 +1,19 @@
-# Be Consistent
+# Будьте послідовними
 
-Some of the guidelines outlined in this document can be evaluated objectively;
-others are situational, contextual, or subjective.
+Деякі з настанов, викладених у цьому документі, можна оцінити об'єктивно;
+інші є ситуативними, контекстними або суб'єктивними.
 
-Above all else, **be consistent**.
+Перш за все, **будьте послідовними**.
 
-Consistent code is easier to maintain, is easier to rationalize, requires less
-cognitive overhead, and is easier to migrate or update as new conventions emerge
-or classes of bugs are fixed.
+Послідовний код легше підтримувати та раціоналізувати,
+він потребує менше когнітивних витрат і його легше переносити чи оновлювати,
+коли з'являються нові угоди або виправляються класи помилок.
 
-Conversely, having multiple disparate or conflicting styles within a single
-codebase causes maintenance overhead, uncertainty, and cognitive dissonance,
-all of which can directly contribute to lower velocity, painful code reviews,
-and bugs.
+І навпаки, наявність кількох різнорідних або потенційно конфліктних стилів в одній
+кодовій базі спричиняє накладні витрати на технічне обслуговування, невизначеність
+і когнітивний дисонанс. Усе це може безпосередньо сприяти зниженню швидкості,
+болісним перевіркам коду та помилкам.
 
-When applying these guidelines to a codebase, it is recommended that changes
-are made at a package (or larger) level: application at a sub-package level
-violates the above concern by introducing multiple styles into the same code.
+Застосовуючи ці вказівки до кодової бази, рекомендується вносити зміни на рівні пакета
+(або вище): застосування на рівні під-пакету порушує вищезазначені проблеми,
+додаючи кілька стилів до одного коду.

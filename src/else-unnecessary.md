@@ -1,10 +1,9 @@
-# Unnecessary Else
+# Зайвий оператор else
 
-If a variable is set in both branches of an if, it can be replaced with a
-single if.
+Якщо змінна встановлена в обох частинах if, її можна замінити одним if.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 

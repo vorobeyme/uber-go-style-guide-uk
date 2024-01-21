@@ -1,35 +1,34 @@
-# Avoid Embedding Types in Public Structs
+# Уникайте вбудовування типів (type embedding) у публічні структури
 
-These embedded types leak implementation details, inhibit type evolution, and
-obscure documentation.
+Типи, вбудовані в публічні структури, пропускають деталі реалізації,
+обмежують розвиток типів і негативно впливають на якість документації.
 
-Assuming you have implemented a variety of list types using a shared
-`AbstractList`, avoid embedding the `AbstractList` in your concrete list
-implementations.
-Instead, hand-write only the methods to your concrete list that will delegate
-to the abstract list.
+Якщо припустити, що ви реалізували різні типи списків за допомогою спільного
+`AbstractList`, уникайте вбудовування `AbstractList` у ваші конкретні реалізації списків.
+Натомість, додайте до свого конкретного списку методи, які будуть делегувати
+завдання методам абстрактного списку `AbstractList`.
 
 ```go
 type AbstractList struct {}
 
-// Add adds an entity to the list.
+// Add додає сутність до списку.
 func (l *AbstractList) Add(e Entity) {
   // ...
 }
 
-// Remove removes an entity from the list.
+// Remove видаляє сутність зі списку.
 func (l *AbstractList) Remove(e Entity) {
   // ...
 }
 ```
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
 ```go
-// ConcreteList is a list of entities.
+// ConcreteList - список сутностей.
 type ConcreteList struct {
   *AbstractList
 }
@@ -38,17 +37,17 @@ type ConcreteList struct {
 </td><td>
 
 ```go
-// ConcreteList is a list of entities.
+// ConcreteList - список сутностей.
 type ConcreteList struct {
   list *AbstractList
 }
 
-// Add adds an entity to the list.
+// Add додає сутність до списку.
 func (l *ConcreteList) Add(e Entity) {
   l.list.Add(e)
 }
 
-// Remove removes an entity from the list.
+// Remove видаляє сутність зі списку.
 func (l *ConcreteList) Remove(e Entity) {
   l.list.Remove(e)
 }
@@ -57,39 +56,39 @@ func (l *ConcreteList) Remove(e Entity) {
 </td></tr>
 </tbody></table>
 
-Go allows [type embedding] as a compromise between inheritance and composition.
-The outer type gets implicit copies of the embedded type's methods.
-These methods, by default, delegate to the same method of the embedded
-instance.
+Go дозволяє [вбудовування типу] як компроміс між наслідуванням та композицією.
+Зовнішній тип отримує неявні копії методів вбудованого типу.
+За замовчуванням, ці методи делегують завдання методам вбудованого екземпляра.
 
-  [type embedding]: https://golang.org/doc/effective_go.html#embedding
+  [вбудовування типу]: https://golang.org/doc/effective_go.html#embedding
 
-The struct also gains a field by the same name as the type.
-So, if the embedded type is public, the field is public.
-To maintain backward compatibility, every future version of the outer type must
-keep the embedded type.
+Структура також отримує поле з тим же іменем, що й тип.
+Отже, якщо вбудований тип загальнодоступний, поле також буде публічним.
+Для зворотної сумісності, будь-яка майбутня версія зовнішнього типу
+повинна зберігати вбудований тип.
 
-An embedded type is rarely necessary.
-It is a convenience that helps you avoid writing tedious delegate methods.
+Вбудований тип рідко буває необхідним.
+В основному це зручний спосіб уникнути виснажливого написання методів делегування.
 
-Even embedding a compatible AbstractList *interface*, instead of the struct,
-would offer the developer more flexibility to change in the future, but still
-leak the detail that the concrete lists use an abstract implementation.
+Навіть вбудовування сумісного *інтерфейсу* AbstractList замість структури,
+надасть розробнику більше гнучкості для внесення змін в майбутньому,
+але все одно призведе до витоку інформації про те, що конкретні списки
+використовують абстрактну реалізацію.
 
 <table>
-<thead><tr><th>Bad</th><th>Good</th></tr></thead>
+<thead><tr><th>Не рекомендовано</th><th>Рекомендовано</th></tr></thead>
 <tbody>
 <tr><td>
 
 ```go
-// AbstractList is a generalized implementation
-// for various kinds of lists of entities.
+// AbstractList — це узагальнена реалізація для різних
+// видів списків сутностей.
 type AbstractList interface {
   Add(Entity)
   Remove(Entity)
 }
 
-// ConcreteList is a list of entities.
+// ConcreteList — це список сутностей.
 type ConcreteList struct {
   AbstractList
 }
@@ -98,17 +97,17 @@ type ConcreteList struct {
 </td><td>
 
 ```go
-// ConcreteList is a list of entities.
+// ConcreteList — це список сутностей.
 type ConcreteList struct {
   list AbstractList
 }
 
-// Add adds an entity to the list.
+// Add додає сутність до списку.
 func (l *ConcreteList) Add(e Entity) {
   l.list.Add(e)
 }
 
-// Remove removes an entity from the list.
+// Remove видаляє сутність зі списку.
 func (l *ConcreteList) Remove(e Entity) {
   l.list.Remove(e)
 }
@@ -117,16 +116,14 @@ func (l *ConcreteList) Remove(e Entity) {
 </td></tr>
 </tbody></table>
 
-Either with an embedded struct or an embedded interface, the embedded type
-places limits on the evolution of the type.
+Чи це вбудована структура, чи вбудований інтерфейс, вбудований тип обмежує розвиток цього типу.
 
-- Adding methods to an embedded interface is a breaking change.
-- Removing methods from an embedded struct is a breaking change.
-- Removing the embedded type is a breaking change.
-- Replacing the embedded type, even with an alternative that satisfies the same
-  interface, is a breaking change.
+- Додавання методів до вбудованого інтерфейсу порушує сумісність (breaking changes).
+- Видалення методів із вбудованої структури порушує сумісність.
+- Видалення вбудованого типу порушує сумісність.
+- Заміна вбудованого типу, навіть якщо заміна відповідає тому самому інтерфейсу,
+  порушує сумісність.
 
-Although writing these delegate methods is tedious, the additional effort hides
-an implementation detail, leaves more opportunities for change, and also
-eliminates indirection for discovering the full List interface in
-documentation.
+Попри те, що написання цих методів делегування (методи, визначені в інтерфейсі) є громіздким,
+додаткові зусилля приховують деталі реалізації, залишають більше можливостей для змін,
+а також усувають непрямий доступ до повного інтерфейсу List в документації.
