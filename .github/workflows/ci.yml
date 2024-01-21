@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request_target:
+    branches: [ '*' ]
+
+jobs:
+  stitchmd:
+    name: Check or update style.md
+    runs-on: ubuntu-latest
+
+    # Needed to give the job permission
+    # to push to branches.
+    permissions:
+      contents: write
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+      with:
+        # Check out the pull request repository and branch.
+        # If the PR is made from a fork, this will check out the fork.
+        # This is necessary for git-auto-commit-action to update PRs made by forks.
+        # See 
+        # https://github.com/stefanzweifel/git-auto-commit-action#use-in-forks-from-public-repositories
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        ref: ${{ github.head_ref }}
+
+    - name: Check or update style.md
+      uses: abhinav/stitchmd-action@v1
+      with:
+        # For pull requests, run in 'write' mode so that edits made
+        # directly in the GitHub UI get propagated to style.md
+        # without a local checkout.
+        #
+        # Otherwise, run in 'check' mode to fail CI if style.md is out-of-date.
+        mode: ${{ github.event_name == 'pull_request_target' && 'write' || 'check' }}
+        summary: src/SUMMARY.md
+        preface: src/preface.txt
+        output: style.md
+
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      if: ${{ github.event_name == 'pull_request_target' }}
+      with:
+        file_pattern: style.md
+        commit_message: 'Auto-update style.md'
